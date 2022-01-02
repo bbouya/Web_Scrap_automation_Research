@@ -2,90 +2,89 @@ import requests
 from bs4 import BeautifulSoup
 
 
-# User define function 
-# Scrape the data 
-# And get in string
 
+
+
+# user define function
+# Scrape the data
+# and get in string
 def getdata(url):
     r = requests.get(url)
-    return r.text
-
-# Get Html code 
+    r = r.text
+    return r
+  
+# Get Html code using parse
 def html_code(url):
-    
+  
     # pass the url
-    #into getdata function
+    # into getdata function
     htmldata = getdata(url)
     soup = BeautifulSoup(htmldata, 'html.parser')
-    
-    # return html code 
-    return soup
-
-# Filtre job data 
-# Find_all function
-
+  
+    # return html code
+    return(soup)
+  
+# filter job data using
+# find_all function
 def job_data(soup):
     
-    # Find the Html tag
-    # With find()
+    # find the Html tag
+    # with find()
     # and convert into string
-    
     data_str = ""
-    for item in soup.find_all('a', class_="jobtitle turnstileLink"):
+    for item in soup.find_all("a", class_="jobtitle turnstileLink"):
         data_str = data_str + item.get_text()
-    result_1 = data_str.split('\n')
+    result_1 = data_str.split("\n")
     return(result_1)
-
-#Filtre company_ data using
-# Find all function
-
-
+  
+# filter company_data using
+# find_all function
+  
+  
 def company_data(soup):
-    # find the html tag
-    #with find()
+  
+    # find the Html tag
+    # with find()
     # and convert into string
-       
-    data_str = ''
-    result = ''
-    for item in soup.find_all("div", class_='sjcl'):
+    data_str = ""
+    result = ""
+    for item in soup.find_all("div", class_="sjcl"):
         data_str = data_str + item.get_text()
-    result_1 = data_str.split('\n')
-    
+    result_1 = data_str.split("\n")
+  
     res = []
-    
     for i in range(1, len(result_1)):
-        if len(result_1[i])>1:
+        if len(result_1[i]) > 1:
             res.append(result_1[i])
     return(res)
-
-# Driver nodes/ main function
-
-if __name__ =='__main__':
+  
+  
+# driver nodes/main function
+if __name__ == "__main__":
+  
+    # Data for URL
+    job = "data+science+internship"
+    Location = "Noida%2C+Uttar+Pradesh"
+    #url = "https://in.indeed.com/jobs?q="+job+"&l="+Location
+    url = "https://fr.indeed.com/emplois?q=Data%20Science&_ga=2.80677015.1848947799.1641126919-579173139.1636495578&vjk=5ce5d322aa2d1768"
     
-    # Data for Url
-    job = 'data+science+internship'
-    locatio = 'Noida%2C+Uttar+Pradesh'
-    url = "https://in.indeed.com/jobs?q="+job+"&l="+Location
-
-    
-    # Pass this URL into the soup^
-    # Which will return 
-    # Html string
-    
+    # Pass this URL into the soup
+    # which will return
+    # html string
     soup = html_code(url)
-    
-    # Call job and company data
+  
+    # call job and company data
     # and store into it var
     job_res = job_data(soup)
     com_res = company_data(soup)
-    
+  
     # Traverse the both data
     temp = 0
     for i in range(1, len(job_res)):
-        j = temp 
+        j = temp
         for j in range(temp, 2+temp):
-            print("Company Name and Address : " + com_res )
-            
+            print("Company Name and Address : " + com_res[j])
+  
         temp = j
         print("Job : " + job_res[i])
-        print("------------------------------------")
+        print("-----------------------------")
