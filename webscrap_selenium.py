@@ -5,7 +5,6 @@ from bs4 import BeautifulSoup
 options = webdriver.ChromeOptions()
 #driver = webdriver.Chrome("./chromedriver")
 driver = webdriver.Chrome()
-driver.get("http://www.python.org")
 
 df = pd.DataFrame(columns=["Title","Location","Company","Salary","Sponsored","Description"])
 
@@ -18,9 +17,10 @@ for i in range(0,500,10):
 	for job in driver.find_elements_by_class_name('result'):
 
 		soup = BeautifulSoup(job.get_attribute('innerHTML'),'html.parser')
-		
+		texto = soup.text
+		print(texto)
 		try:
-			title = soup.find("a",class_="jobtitle").text.replace("\n","").strip()
+			title = soup.find("h1",class_="jobsearch-JobComponent icl-u-xs-mt--sm").text.replace("\n","").strip()
 			
 		except:
 			title = 'None'
@@ -46,15 +46,22 @@ for i in range(0,500,10):
 		except:
 			sponsored = "Organic"				
 
-		
-		sum_div = job.find_element_by_xpath('./div[3]')
+		txtt = job.text
+        
+        #print()
+		sum_div = job.find_element_by_xpath('./div')
+        
 		try:
 			sum_div.click()
 		except:
 			close_button = driver.find_elements_by_class_name('popover-x-button-close')[0]
 			close_button.click()
 			sum_div.click()	
-		job_desc = driver.find_element_by_id('vjs-desc').text
+		
+		job_text = driver.page_source
+		print(job_text)
+		print(txtt)
+		job_desc = driver.find_element_by_id('jobDescriptionText').text
 
 		df = df.append({'Title':title,'Location':location,"Company":company,"Salary":salary,
 						"Sponsored":sponsored,"Description":job_desc},ignore_index=True)
